@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "## PLOT COST OF GENOME SEQUENCING FROM US GOV DATA ##\n\n\n\n\nx <- read.csv(\"sequencing_costs_table_july_2017.csv\", header = T)\n\nx$Date <- as.character(x$Date)\nx$Cost.per.Mb <- as.numeric(gsub(\"\\\\,\",\"\",gsub(\"\\\\$\",\"\",x$Cost.per.Mb)))\nx$Cost.per.Genome  <- as.numeric(gsub(\"\\\\,\",\"\",gsub(\"\\\\$\",\"\",x$Cost.per.Genome)))\n\n\n\nplot(x$Date,x$Cost.per.Mb)\n\nnew.date <- c()\nnew.year <- c()\nfor(i in x$Date){\n  mth <- which(month.abb%in%strsplit(i,split = \"\\\\-\")[[1]][1])\n  year <- 2000 + as.numeric(strsplit(i,split = \"\\\\-\")[[1]][2])\n  new.date <- c(new.date,as.Date(paste(\"1\",mth,year, sep=\"/\"),format = \"%d/%m/%Y\"))\n  new.year <- c(new.year,year)\n}\n\n\nnew.costs <- log(x$Cost.per.Genome)\ncosts.y <- pretty(range(new.costs))\ncosts <- range(x$Cost.per.Genome)\n\n\npng(\"crashingSequencingCosts.png\",\n    width = 1500, height = 800, res = 150)\nplot(as.Date(new.date,origin = \"1970-01-01\"),new.costs, log = \"y\",\n     type = \"n\", col = \"blue\", lwd = 2, axes = \"F\",\n     xlab = \"Year\",\n     ylab = \"Cost per genome ($)\"\n     )\nbox()\nxat <- c()\nyears <- (2000:2018)\nfor(i in years){\n  abline(v=as.Date(paste(\"01/01\",i,sep = \"/\"),format = \"%d/%m/%Y\"),lwd = 0.5, col = \"grey60\")\n  xat <- c(xat,as.Date(paste(\"01/06\",i,sep = \"/\"),format = \"%d/%m/%Y\"))\n}\naxis(1,at = xat,labels = years, lwd = 0, cex.axis = 0.8)  \n  \n\naty <- axTicks(2)\nlabsy <- paste0(pretty(costs/1000000),\"M\")\nlabsy[1] <- \"1K\"\naxis(2, las = 2, at = c(0,aty), labels = c(\"\",labsy))\nabline(h = aty, lwd = 0.5, lty = 2)\n\n\npoints(as.Date(new.date,origin = \"1970-01-01\"),\n       new.costs, lwd = 2)\npoints(as.Date(new.date,origin = \"1970-01-01\"),\n       new.costs, col = \"blue\", lwd = 2,\n       type = \"l\")\n\nmtext(1,adj = 1, text = \"Source: https://www.genome.gov/27541954/dna-sequencing-costs-data/\",\n      line = 4, cex = 0.8)\n\ndev.off()",
+    "created" : 1538051087565.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1986324859",
+    "id" : "489C4EC7",
+    "lastKnownWriteTime" : 1538055048,
+    "last_content_update" : 1538055048459,
+    "path" : "~/repos/cost_of_sequencing/plotCostGenome.R",
+    "project_path" : "plotCostGenome.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
